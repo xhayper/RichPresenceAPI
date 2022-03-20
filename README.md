@@ -2,9 +2,9 @@
 
 'discord-rpc-csharp' for Unity BepInEx plugin
 
-## Why use this instead of 'discord-rpc-csharp'?
+## Why use this instead of 'discord-rpc-csharp' directly?
 
-- Unity broke the '[Named Pipe Client Stream](https://docs.microsoft.com/en-us/dotnet/api/system.io.pipes.namedpipeclientstream)' that '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' use, So we have to use the "NativeNamedPipe" that '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp) told us, But it's a pain to do it, This plugin simplify all of those thing.
+- Unity broke the '[Named Pipe Client Stream](https://docs.microsoft.com/en-us/dotnet/api/system.io.pipes.namedpipeclientstream)' that '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' use, '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' recommended us to install a alternative called '[NativeNamedPipe](https://github.com/Lachee/unity-named-pipes/tree/master/UnityNamedPipe.Native)' which is a pain in the ass to install, So this plugin simplify it.
 
 ## Why Unity version '2019.4.24'?
 
@@ -62,6 +62,10 @@ namespace ExamplePlugin
     }
 }
 ```
+
+## Compile process
+- First, you need to re-compile the '[NativeNamedPipe](https://github.com/Lachee/unity-named-pipes/tree/master/UnityNamedPipe.Native)' in 'amd64_x86', because the version that 'discord-rpc-csharp' provied with is 'x86_amd64', then, put the compiled DLL in the same folder as 'RichPresenceAPI.dll'.
+- You need to download [discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)'s DLL, and [Newtonsoft.Json](https://www.newtonsoft.com/json)'s DLL, and put it in the same folder as 'RichPresenceAPI.dll'.
 
 ## See also
 - [discord-rpc-charp's README](https://github.com/Lachee/discord-rpc-csharp)
