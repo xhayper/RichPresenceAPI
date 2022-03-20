@@ -64,8 +64,10 @@ namespace ExamplePlugin
 ```
 
 ## Compile process
+
 - First, you need to re-compile the '[NativeNamedPipe](https://github.com/Lachee/unity-named-pipes/tree/master/UnityNamedPipe.Native)' in 'amd64_x86', because the version that 'discord-rpc-csharp' provied with is 'x86_amd64', then, put the compiled DLL in the same folder as 'RichPresenceAPI.dll'.
 - You need to download [discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)'s DLL, and [Newtonsoft.Json](https://www.newtonsoft.com/json)'s DLL, and put it in the same folder as 'RichPresenceAPI.dll'.
 
 ## See also
+
 - [discord-rpc-charp's README](https://github.com/Lachee/discord-rpc-csharp)
