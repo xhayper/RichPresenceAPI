@@ -17,15 +17,9 @@ namespace RichPresenceAPI
         private void Awake()
         {
             string pathToDLL = $"{AssemblyDirectory}\\{PluginInfo.PLUGIN_NAME}\\{DLL_NAME}";
-            if (!File.Exists(pathToDLL))
-            {
-                pathToDLL = $"{AssemblyDirectory}\\{DLL_NAME}"; // Thunderstore Mod Manager, Screw you.
-                if (!File.Exists(pathToDLL))
-                    throw new FileNotFoundException("Could not find file", DLL_NAME);
-            }
+            if (!File.Exists(pathToDLL)) throw new FileNotFoundException("Could not find file", pathToDLL);
             hModule = Native.LoadLibrary(pathToDLL);
             if (hModule == IntPtr.Zero) throw new Exception(String.Format("Failed to load \"{0}\" (ErrorCode: {1})", pathToDLL, Marshal.GetLastWin32Error()));
-
         }
 
         private void OnDestroy()
