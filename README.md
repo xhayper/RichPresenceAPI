@@ -29,7 +29,7 @@ namespace ExamplePlugin
 
         private void Awake()
         {
-            client = RichPresenceAPI.Utility.createClient(my_client_id);
+            client = RichPresenceAPI.Utility.createDiscordRpcClient(my_client_id);
 
             //Set the logger
             client.Logger = new BepInExLogger(Logger)
