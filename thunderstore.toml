@@ -1,0 +1,32 @@
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "xhayper"
+name = "RichPresenceAPI"
+versionNumber = "0.0.6"
+description = "'discord-rpc-csharp' for BepInEx plugin"
+websiteUrl = "https://github.com/xhayper/RichPresenceAPI"
+containsNsfwContent = false
+
+[build]
+icon = "./icon.png"
+readme = "./README.md"
+outdir = "./build"
+
+[[build.copy]]
+source = "bin/Release/publish/RichPresenceAPI.dll"
+target = "plugins/RichPresenceAPI.dll"
+
+[[build.copy]]
+source = "bin/Release/publish/DiscordRPC.dll"
+target = "plugins/RichPresenceAPI/DiscordRPC.dll"
+
+[[build.copy]]
+source = "bin/Release/publish/Newtonsoft.Json.dll"
+target = "plugins/RichPresenceAPI/Newtonsoft.Json.dll"
+
+[publish]
+repository = "https://inscryption.thunderstore.io"
+communities = ["inscryption"]
+categories = ["libraries"]
