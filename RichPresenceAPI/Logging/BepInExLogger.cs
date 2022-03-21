@@ -16,25 +16,25 @@ namespace RichPresenceAPI.Logging
 
         public void Trace(string message, params object[] args)
         {
-            if (!(Level is LogLevel.Trace)) return;
+            if (Level > LogLevel.Trace) return;
             logger.LogInfo(String.Format(message, args));
         }
 
         public void Info(string message, params object[] args)
         {
-            if (!(Level is LogLevel.Info or LogLevel.Trace)) return;
+            if (Level > LogLevel.Info) return;
             logger.LogInfo(String.Format(message, args));
         }
 
         public void Warning(string message, params object[] args)
         {
-            if (!(Level is LogLevel.Warning or LogLevel.Info or LogLevel.Trace)) return;
+            if (Level > LogLevel.Warning) return;
             logger.LogWarning(String.Format(message, args));
         }
 
         public void Error(string message, params object[] args)
         {
-            if (!(Level is LogLevel.Error or LogLevel.Warning or LogLevel.Info or LogLevel.Trace)) return;
+            if (Level > LogLevel.Error) return;
             logger.LogError(String.Format(message, args));
         }
     }
