@@ -26,6 +26,10 @@ target = "plugins/RichPresenceAPI/DiscordRPC.dll"
 source = "bin/Release/publish/Newtonsoft.Json.dll"
 target = "plugins/RichPresenceAPI/Newtonsoft.Json.dll"
 
+[[build.copy]]
+source = "lib/NativeNamedPipe.dll"
+target = "plugins/RichPresenceAPI/NativeNamedPipe.dll"
+
 [publish]
 repository = "https://inscryption.thunderstore.io"
 communities = ["inscryption"]

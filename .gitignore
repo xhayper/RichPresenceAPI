@@ -2,7 +2,8 @@
 .cache/
 .idea/
 
-
-lib/
 bin/
 obj/
+
+lib/*
+!lib/NativeNamedPipe.dll
