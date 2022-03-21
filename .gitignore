@@ -2,6 +2,7 @@
 .cache/
 .idea/
 
+build/
 bin/
 obj/
 
