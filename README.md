@@ -6,7 +6,7 @@
 
 - Unity broke the '[Named Pipe Client Stream](https://docs.microsoft.com/en-us/dotnet/api/system.io.pipes.namedpipeclientstream)' that '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' use, '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' recommended us to install a alternative called '[NativeNamedPipe](https://github.com/Lachee/unity-named-pipes/tree/master/UnityNamedPipe.Native)' which is a pain in the ass to install, So this plugin simplify it.
 
-## Why Unity version '2019.4.24'?
+## Why Unity version '2019.4.24'
 
 - This was originally planned to be used for '[Inscryption](https://store.steampowered.com/app/1092790/Inscryption)', Hence the '2019.4.2'
 
