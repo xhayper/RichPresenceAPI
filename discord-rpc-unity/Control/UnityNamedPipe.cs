@@ -1,10 +1,12 @@
-#if !DISABLE_DISCORD
-using DiscordRPC.IO;
+﻿using DiscordRPC.IO;
 using DiscordRPC.Logging;
 using System;
-using DiscordRPC.Unity.IO;
+using Lachee.IO;
 using System.IO;
-namespace DiscordRPC.Unity
+using System.Runtime.InteropServices;
+using System.Threading;
+
+namespace Lachee.Discord.Control
 {
     /// <summary>
     /// Pipe Client used to communicate with Discord.
@@ -17,7 +19,7 @@ namespace DiscordRPC.Unity
         private byte[] _buffer = new byte[PipeFrame.MAX_SIZE];
 
         public ILogger Logger { get; set; }
-        public bool IsConnected { get { return _stream != null && _stream.IsConnected; } }
+        public bool IsConnected {  get { return _stream != null && _stream.IsConnected; } }
         public int ConnectedPipe { get; private set; }
 
         private volatile bool _isDisposed = false;
@@ -26,10 +28,10 @@ namespace DiscordRPC.Unity
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("NamedPipe");
-
+            
             if (pipe > 9)
                 throw new ArgumentOutOfRangeException("pipe", "Argument cannot be greater than 9");
-
+            
             if (pipe < 0)
             {
                 //If we have -1,  then we need to iterate over every single pipe until we get it
@@ -51,7 +53,7 @@ namespace DiscordRPC.Unity
         }
 
         private bool AttemptConnection(int pipe, bool doSandbox = false)
-        {
+        { 
             //Make sure the stream is null
             if (_stream != null)
             {
@@ -80,7 +82,7 @@ namespace DiscordRPC.Unity
                 string pipename = GetPipeName(pipe);
 
                 //Attempt to connect
-                Logger.Info("Connecting to " + pipename + " (" + sandbox + ")");
+                Logger.Info("Connecting to " + pipename + " (" + sandbox +")");
                 ConnectedPipe = pipe;
                 _stream = new NamedPipeClientStream(".", pipename);
                 _stream.Connect();
@@ -88,7 +90,7 @@ namespace DiscordRPC.Unity
                 Logger.Info("Connected");
                 return true;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Logger.Error("Failed: " + e.GetType().FullName + ", " + e.Message);
                 ConnectedPipe = -1;
@@ -196,12 +198,16 @@ namespace DiscordRPC.Unity
             switch (Environment.OSVersion.Platform)
             {
                 default:
+
+#if !UNITY_EDITOR_OSX
                 case PlatformID.Win32NT:
                 case PlatformID.Win32S:
                 case PlatformID.Win32Windows:
                 case PlatformID.WinCE:
                     Logger.Trace("PIPE WIN");
                     return sandbox + string.Format(PIPE_NAME, pipe);
+#endif
+
                 case PlatformID.Unix:
                 case PlatformID.MacOSX:
                     Logger.Trace("PIPE UNIX / MACOSX");
@@ -232,4 +238,3 @@ namespace DiscordRPC.Unity
         }
     }
 }
-#endif

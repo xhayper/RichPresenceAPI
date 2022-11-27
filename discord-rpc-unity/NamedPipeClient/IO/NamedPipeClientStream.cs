@@ -1,9 +1,9 @@
-using DiscordRPC.Unity.IO.Exceptions;
+using Lachee.IO.Exceptions;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace DiscordRPC.Unity.IO
+namespace Lachee.IO
 {
     public class NamedPipeClientStream : System.IO.Stream
     {

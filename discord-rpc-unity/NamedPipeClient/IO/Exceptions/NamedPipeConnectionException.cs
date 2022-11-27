@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DiscordRPC.Unity.IO.Exceptions
+namespace Lachee.IO.Exceptions
 {
     public class NamedPipeConnectionException : Exception
     {

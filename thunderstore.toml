@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "xhayper"
 name = "RichPresenceAPI"
-versionNumber = "0.0.7"
+versionNumber = "1.0.0"
 description = "'discord-rpc-csharp' for BepInEx plugin"
 websiteUrl = "https://github.com/xhayper/RichPresenceAPI"
 containsNsfwContent = false
@@ -15,22 +15,16 @@ readme = "./README.md"
 outdir = "./build"
 
 [[build.copy]]
-source = "bin/Release/publish/RichPresenceAPI.dll"
-target = "plugins/RichPresenceAPI.dll"
+source = "bin/Release/RichPresenceAPI/RichPresenceAPI.dll"
+target = "plugins/io.github.xhayper.RichPresenceAPI/RichPresenceAPI.dll"
 
 [[build.copy]]
-source = "bin/Release/publish/DiscordRPC.dll"
-target = "plugins/RichPresenceAPI/DiscordRPC.dll"
+source = "bin/Release/RichPresenceAPI/discord-rpc-unity.dll"
+target = "plugins/io.github.xhayper.RichPresenceAPI/discord-rpc-unity.dll"
 
 [[build.copy]]
-source = "bin/Release/publish/Newtonsoft.Json.dll"
-target = "plugins/RichPresenceAPI/Newtonsoft.Json.dll"
-
-[[build.copy]]
-source = "lib/NativeNamedPipe.dll"
-target = "plugins/RichPresenceAPI/NativeNamedPipe.dll"
+source = "Assets"
+target = "plugins/io.github.xhayper.RichPresenceAPI/Assets"
 
 [publish]
-repository = "https://inscryption.thunderstore.io"
-communities = ["inscryption"]
 categories = ["libraries"]

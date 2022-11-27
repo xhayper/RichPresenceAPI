@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Guid>io.github.xhayper.RichPresenceAPI</Guid>
+        <Product>RichPresenceAPI</Product>
+    </PropertyGroup>
+
+    <Import Project="../RichPresenceAPI.Common.props" />
+</Project>

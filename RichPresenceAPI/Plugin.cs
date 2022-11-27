@@ -1,29 +1,37 @@
 using System.Runtime.InteropServices;
-using System.IO;
 using BepInEx;
-using System;
 
-namespace RichPresenceAPI
+namespace RichPresenceAPI;
+
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+public class Plugin : BaseUnityPlugin
 {
-    [BepInPlugin(GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    public class RichPresenceAPI : BaseUnityPlugin
+    private IntPtr hModule;
+
+    private void OnEnable()
     {
+        LoadDll();
+    }
 
-        private const string GUID = "io.github.xhayper.RichPresenceAPI";
-        private const string DLL_NAME = "NativeNamedPipe.dll";
-        private static IntPtr hModule;
+    private void OnDisable()
+    {
+        UnloadDll();
+    }
 
-        private void Awake()
-        {
-            string pathToDLL = Path.Combine(Path.GetDirectoryName(Info.Location), PluginInfo.PLUGIN_NAME, DLL_NAME);
-            if (!File.Exists(pathToDLL)) throw new FileNotFoundException("Could not find file", pathToDLL);
-            hModule = Native.Kernel32.LoadLibrary(pathToDLL);
-            if (hModule == IntPtr.Zero) throw new Exception(String.Format("Failed to load \"{0}\" (ErrorCode: {1})", pathToDLL, Marshal.GetLastWin32Error()));
-        }
+    private void LoadDll()
+    {
+        var dllFolder = Path.Combine(Path.GetDirectoryName(Info.Location), "Assets", "lib", "x86_64");
+        var dllPath = Path.Combine(dllFolder, RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "NativeNamedPipe.dll" : "NativeNamedPipe.so");
 
-        private void OnDestroy()
-        {
-            Native.Kernel32.FreeLibrary(hModule);
-        }
+        hModule = Native.Kernel32.LoadLibrary(dllPath);
+
+        if (hModule == IntPtr.Zero) throw new Exception(String.Format("Failed to load \"{0}\" (ErrorCode: {1})", dllPath, Marshal.GetLastWin32Error()));
+        else Logger.LogInfo("Native DLL loaded successfully, Have fun! :)");
+    }
+
+    private void UnloadDll()
+    {
+        Logger.LogInfo("Freeing Native DLL...");
+        Native.Kernel32.FreeLibrary(hModule);
     }
 }
