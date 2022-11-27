@@ -26,9 +26,10 @@ namespace ExamplePlugin;
 public class Plugin : BaseUnityPlugin
 {
     private DiscordRpcClient client;
+    
     private void Awake()
     {
-        client = RichPresenceAPI.Utility.CreateDiscordRpcClient(my_client_id);
+        client = RichPresenceAPI.Utility.CreateDiscordRpcClient("123456789054321");
 
         //Set the logger
         client.Logger = new BepInExLogger(Logger)
@@ -56,7 +57,8 @@ public class Plugin : BaseUnityPlugin
 
     private void OnDestroy()
     {
-        client.Dispose();
+        if (client != null)
+            client.Dispose();
     }
 }
 ```
