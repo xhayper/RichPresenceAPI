@@ -4,11 +4,11 @@
 
 ## Why use this instead of 'discord-rpc-csharp' directly?
 
--   Unity broke the '[Named Pipe Client Stream](https://docs.microsoft.com/en-us/dotnet/api/system.io.pipes.namedpipeclientstream)' that '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' use, '[discord-rpc-charp](https://github.com/Lachee/discord-rpc-csharp)' recommended us to install a alternative called '[NativeNamedPipe](https://github.com/Lachee/unity-named-pipes/tree/master/UnityNamedPipe.Native)' which is a pain in the ass to install, So this plugin simplify it.
+Unity broke the '[Named Pipe Client Stream](https://docs.microsoft.com/en-us/dotnet/api/system.io.pipes.namedpipeclientstream)' that 'discord-rpc-charp' use,  so 'discord-rpc-charp' recommended us to install a alternative called '[NativeNamedPipe](https://github.com/Lachee/unity-named-pipes/tree/1d1abc0bce88c89ba728907f2d338e65c72b74ef/UnityNamedPipe.Native)', which is really hard to install via BepInEx. This plugin install it and load the native lib for you so you don't have to be in pain trying to get the native lib to work (trust me i spent hours of research just for it to work).
 
-## Why Unity version '2019.4.24'
+## Why Unity version '2019.4.24'?
 
--   This was originally planned to be used for '[Inscryption](https://store.steampowered.com/app/1092790/Inscryption)', Hence the '2019.4.2', but it can be used with any unity version.
+This was originally planned to be used for '[Inscryption](https://store.steampowered.com/app/1092790/Inscryption)' only, which runs on 2019.4.24, so i stick with it, it should be complatible with every version that discord-rpc-csharp support.
 
 ## Example Usage
 
@@ -26,7 +26,7 @@ namespace ExamplePlugin;
 public class Plugin : BaseUnityPlugin
 {
     private DiscordRpcClient client;
-    
+
     private void Awake()
     {
         client = RichPresenceAPI.Utility.CreateDiscordRpcClient("123456789054321");
