@@ -23,6 +23,10 @@ source = "bin/Release/RichPresenceAPI/discord-rpc-unity.dll"
 target = "plugins/io.github.xhayper.RichPresenceAPI/discord-rpc-unity.dll"
 
 [[build.copy]]
+source = "bin/Release/RichPresenceAPI/DiscordRPC.dll"
+target = "plugins/io.github.xhayper.RichPresenceAPI/DiscordRPC.dll"
+
+[[build.copy]]
 source = "Assets"
 target = "plugins/io.github.xhayper.RichPresenceAPI/Assets"
 
