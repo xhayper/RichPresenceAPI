@@ -7,7 +7,7 @@ namespace RichPresenceAPI;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin
 {
-    private IntPtr? _hModule;
+    private IntPtr? _handle;
 
     private void OnEnable()
     {
@@ -26,29 +26,29 @@ public class Plugin : BaseUnityPlugin
         var libPath = Path.Combine(libFolder, $"{libPrefix}NativeNamedPipe.{Utility.GetLibraryExtension()}");
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            _hModule = Kernel32.LoadLibrary(libPath);
+            _handle = Kernel32.LoadLibrary(libPath);
         else
-            _hModule = libdl.dlopen(libPath,
+            _handle = libdl.dlopen(libPath,
                 (int)libdl.OPEN_FLAGS.RTLD_LAZY);
 
-        if (_hModule == IntPtr.Zero)
+        if (_handle == IntPtr.Zero)
             throw new Exception($"Failed to load \"{libPath}\" (ErrorCode: {Marshal.GetLastWin32Error()})");
 
-        Logger.LogInfo($"Native library loaded successfully\nLoaded library: {libPath}\n Have fun! :)");
+        Logger.LogInfo($"Native library loaded successfully\nLoaded library: {libPath}\nHandle: {_handle.Value.ToInt64()}\n Have fun! :)");
     }
 
     private void UnloadDll()
     {
-        if (!_hModule.HasValue)
+        if (!_handle.HasValue)
             return;
 
         Logger.LogInfo("Freeing native library...");
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            Kernel32.FreeLibrary(_hModule.Value);
+            Kernel32.FreeLibrary(_handle.Value);
         else
-            libdl.dlclose(_hModule.Value);
+            libdl.dlclose(_handle.Value);
 
-        _hModule = null;
+        _handle = null;
     }
 }
