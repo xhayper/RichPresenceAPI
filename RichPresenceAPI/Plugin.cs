@@ -21,8 +21,9 @@ public class Plugin : BaseUnityPlugin
 
     private void LoadDll()
     {
+        var libPrefix = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "" : "lib";
         var libFolder = Path.Combine(Path.GetDirectoryName(Info.Location) ?? "", "Assets", "lib", "x86_64");
-        var libPath = Path.Combine(libFolder, $"NativeNamedPipe.{Utility.GetLibraryExtension()}");
+        var libPath = Path.Combine(libFolder, $"{libPrefix}NativeNamedPipe.{Utility.GetLibraryExtension()}");
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             _hModule = Kernel32.LoadLibrary(libPath);
