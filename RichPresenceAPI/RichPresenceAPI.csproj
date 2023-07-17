@@ -4,5 +4,5 @@
         <Product>RichPresenceAPI</Product>
     </PropertyGroup>
 
-    <Import Project="../RichPresenceAPI.Common.props" />
+    <Import Project="../RichPresenceAPI.Common.props"/>
 </Project>

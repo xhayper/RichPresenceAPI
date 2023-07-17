@@ -1,102 +1,49 @@
-﻿using DiscordRPC.IO;
-using DiscordRPC.Logging;
-using System;
-using Lachee.IO;
+﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
+using DiscordRPC.IO;
+using DiscordRPC.Logging;
+using Lachee.IO;
 
 namespace Lachee.Discord.Control
 {
     /// <summary>
-    /// Pipe Client used to communicate with Discord.
+    ///     Pipe Client used to communicate with Discord.
     /// </summary>
     public class UnityNamedPipe : INamedPipeClient
     {
-        const string PIPE_NAME = @"discord-ipc-{0}";
+        private const string PIPE_NAME = @"discord-ipc-{0}";
+        private readonly byte[] _buffer = new byte[PipeFrame.MAX_SIZE];
+
+        private volatile bool _isDisposed;
 
         private NamedPipeClientStream _stream;
-        private byte[] _buffer = new byte[PipeFrame.MAX_SIZE];
 
         public ILogger Logger { get; set; }
-        public bool IsConnected {  get { return _stream != null && _stream.IsConnected; } }
+        public bool IsConnected => _stream != null && _stream.IsConnected;
         public int ConnectedPipe { get; private set; }
-
-        private volatile bool _isDisposed = false;
 
         public bool Connect(int pipe)
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("NamedPipe");
-            
+
             if (pipe > 9)
                 throw new ArgumentOutOfRangeException("pipe", "Argument cannot be greater than 9");
-            
+
             if (pipe < 0)
             {
                 //If we have -1,  then we need to iterate over every single pipe until we get it
                 //Iterate until we connect to a pipe
-                for (int i = 0; i < 10; i++)
-                {
+                for (var i = 0; i < 10; i++)
                     if (AttemptConnection(i) || AttemptConnection(i, true))
                         return true;
-                }
 
                 //We failed everythign else
                 return false;
             }
-            else
-            {
-                //We have a set one so we should just straight up try to connect to it
-                return AttemptConnection(pipe) || AttemptConnection(pipe, true);
-            }
-        }
 
-        private bool AttemptConnection(int pipe, bool doSandbox = false)
-        { 
-            //Make sure the stream is null
-            if (_stream != null)
-            {
-                Logger.Error("Attempted to create a new stream while one already exists!");
-                return false;
-            }
-
-            //Make sure we are disconnected
-            if (IsConnected)
-            {
-                Logger.Error("Attempted to create a new connection while one already exists!");
-                return false;
-            }
-
-            try
-            {
-                //Prepare the sandbox
-                string sandbox = doSandbox ? GetPipeSandbox() : "";
-                if (doSandbox && sandbox == null)
-                {
-                    Logger.Trace("Skipping sandbox because this platform does not support it.");
-                    return false;
-                }
-
-                //Prepare the name
-                string pipename = GetPipeName(pipe);
-
-                //Attempt to connect
-                Logger.Info("Connecting to " + pipename + " (" + sandbox +")");
-                ConnectedPipe = pipe;
-                _stream = new NamedPipeClientStream(".", pipename);
-                _stream.Connect();
-
-                Logger.Info("Connected");
-                return true;
-            }
-            catch(Exception e)
-            {
-                Logger.Error("Failed: " + e.GetType().FullName + ", " + e.Message);
-                ConnectedPipe = -1;
-                Close();
-                return false;
-            }
+            //We have a set one so we should just straight up try to connect to it
+            return AttemptConnection(pipe) || AttemptConnection(pipe, true);
         }
 
         public void Close()
@@ -125,22 +72,22 @@ namespace Lachee.Discord.Control
             //We are not connected so we cannot read!
             if (!IsConnected)
             {
-                frame = default(PipeFrame);
+                frame = default;
                 return false;
             }
 
             //Try and read a frame
-            int length = _stream.Read(_buffer, 0, _buffer.Length);
+            var length = _stream.Read(_buffer, 0, _buffer.Length);
             Logger.Trace("Read {0} bytes", length);
 
             if (length == 0)
             {
-                frame = default(PipeFrame);
+                frame = default;
                 return false;
             }
 
             //Read the stream now
-            using (MemoryStream memory = new MemoryStream(_buffer, 0, length))
+            using (var memory = new MemoryStream(_buffer, 0, length))
             {
                 frame = new PipeFrame();
                 if (!frame.ReadStream(memory))
@@ -148,11 +95,9 @@ namespace Lachee.Discord.Control
                     Logger.Error("Failed to read a frame! {0}", frame.Opcode);
                     return false;
                 }
-                else
-                {
-                    Logger.Trace("Read pipe frame!");
-                    return true;
-                }
+
+                Logger.Trace("Read pipe frame!");
+                return true;
             }
         }
 
@@ -191,6 +136,53 @@ namespace Lachee.Discord.Control
 
             //We must have failed the try catch
             return false;
+        }
+
+        private bool AttemptConnection(int pipe, bool doSandbox = false)
+        {
+            //Make sure the stream is null
+            if (_stream != null)
+            {
+                Logger.Error("Attempted to create a new stream while one already exists!");
+                return false;
+            }
+
+            //Make sure we are disconnected
+            if (IsConnected)
+            {
+                Logger.Error("Attempted to create a new connection while one already exists!");
+                return false;
+            }
+
+            try
+            {
+                //Prepare the sandbox
+                var sandbox = doSandbox ? GetPipeSandbox() : "";
+                if (doSandbox && sandbox == null)
+                {
+                    Logger.Trace("Skipping sandbox because this platform does not support it.");
+                    return false;
+                }
+
+                //Prepare the name
+                var pipename = GetPipeName(pipe);
+
+                //Attempt to connect
+                Logger.Info("Connecting to " + pipename + " (" + sandbox + ")");
+                ConnectedPipe = pipe;
+                _stream = new NamedPipeClientStream(".", pipename);
+                _stream.Connect();
+
+                Logger.Info("Connected");
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Failed: " + e.GetType().FullName + ", " + e.Message);
+                ConnectedPipe = -1;
+                Close();
+                return false;
+            }
         }
 
         private string GetPipeName(int pipe, string sandbox = "")

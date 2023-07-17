@@ -4,6 +4,8 @@ namespace Lachee.IO.Exceptions
 {
     public class NamedPipeConnectionException : Exception
     {
-        internal NamedPipeConnectionException(string message) : base(message) { }
+        internal NamedPipeConnectionException(string message) : base(message)
+        {
+        }
     }
 }

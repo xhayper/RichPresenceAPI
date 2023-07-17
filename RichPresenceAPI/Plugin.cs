@@ -1,12 +1,13 @@
 using System.Runtime.InteropServices;
 using BepInEx;
+using RichPresenceAPI.Native;
 
 namespace RichPresenceAPI;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin
 {
-    private IntPtr hModule;
+    private IntPtr? _hModule;
 
     private void OnEnable()
     {
@@ -20,18 +21,33 @@ public class Plugin : BaseUnityPlugin
 
     private void LoadDll()
     {
-        var dllFolder = Path.Combine(Path.GetDirectoryName(Info.Location), "Assets", "lib", "x86_64");
-        var dllPath = Path.Combine(dllFolder, RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "NativeNamedPipe.dll" : "NativeNamedPipe.so");
+        var libFolder = Path.Combine(Path.GetDirectoryName(Info.Location) ?? "", "Assets", "lib", "x86_64");
+        var libPath = Path.Combine(libFolder, $"NativeNamedPipe.{Utility.GetLibraryExtension()}");
 
-        hModule = Native.Kernel32.LoadLibrary(dllPath);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            _hModule = Kernel32.LoadLibrary(libPath);
+        else
+            _hModule = libdl.dlopen(libPath,
+                (int)libdl.OPEN_FLAGS.RTLD_LAZY);
 
-        if (hModule == IntPtr.Zero) throw new Exception(String.Format("Failed to load \"{0}\" (ErrorCode: {1})", dllPath, Marshal.GetLastWin32Error()));
-        else Logger.LogInfo("Native DLL loaded successfully, Have fun! :)");
+        if (_hModule == IntPtr.Zero)
+            throw new Exception($"Failed to load \"{libPath}\" (ErrorCode: {Marshal.GetLastWin32Error()})");
+
+        Logger.LogInfo("Native library loaded successfully, Have fun! :)");
     }
 
     private void UnloadDll()
     {
-        Logger.LogInfo("Freeing Native DLL...");
-        Native.Kernel32.FreeLibrary(hModule);
+        if (!_hModule.HasValue)
+            return;
+
+        Logger.LogInfo("Freeing native library...");
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            Kernel32.FreeLibrary(_hModule.Value);
+        else
+            libdl.dlclose(_hModule.Value);
+
+        _hModule = null;
     }
 }

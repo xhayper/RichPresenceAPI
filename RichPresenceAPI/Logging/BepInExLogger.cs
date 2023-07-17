@@ -1,39 +1,42 @@
+using BepInEx.Logging;
 using DiscordRPC.Logging;
+using LogLevel = DiscordRPC.Logging.LogLevel;
 
 namespace RichPresenceAPI.Logging;
 
 public class BepInExLogger : ILogger
 {
-    private BepInEx.Logging.ManualLogSource logger;
-    public LogLevel Level { get; set; }
+    private readonly ManualLogSource logger;
 
-    public BepInExLogger(BepInEx.Logging.ManualLogSource logger)
+    public BepInExLogger(ManualLogSource logger)
     {
         this.logger = logger;
     }
+
+    public LogLevel Level { get; set; }
 
 
     public void Trace(string message, params object[] args)
     {
         if (Level > LogLevel.Trace) return;
-        logger.LogInfo(String.Format(message, args));
+        logger.LogInfo(string.Format(message, args));
     }
 
     public void Info(string message, params object[] args)
     {
         if (Level > LogLevel.Info) return;
-        logger.LogInfo(String.Format(message, args));
+        logger.LogInfo(string.Format(message, args));
     }
 
     public void Warning(string message, params object[] args)
     {
         if (Level > LogLevel.Warning) return;
-        logger.LogWarning(String.Format(message, args));
+        logger.LogWarning(string.Format(message, args));
     }
 
     public void Error(string message, params object[] args)
     {
         if (Level > LogLevel.Error) return;
-        logger.LogError(String.Format(message, args));
+        logger.LogError(string.Format(message, args));
     }
 }
