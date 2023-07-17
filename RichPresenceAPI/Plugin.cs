@@ -34,7 +34,7 @@ public class Plugin : BaseUnityPlugin
         if (_hModule == IntPtr.Zero)
             throw new Exception($"Failed to load \"{libPath}\" (ErrorCode: {Marshal.GetLastWin32Error()})");
 
-        Logger.LogInfo("Native library loaded successfully, Have fun! :)");
+        Logger.LogInfo($"Native library loaded successfully\nLoaded library: {libPath}\n Have fun! :)");
     }
 
     private void UnloadDll()
